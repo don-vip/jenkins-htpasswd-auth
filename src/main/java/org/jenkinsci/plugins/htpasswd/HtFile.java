@@ -67,7 +67,7 @@ public abstract class HtFile {
     public synchronized void load(Reader reader) throws IOException {
         BufferedReader r = null;
         if (reader instanceof BufferedReader) {
-            r = (BufferedReader)reader;
+            r = (BufferedReader) reader;
         } else {
             r = new BufferedReader(reader);
         }

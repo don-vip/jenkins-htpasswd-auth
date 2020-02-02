@@ -26,8 +26,10 @@ package org.jenkinsci.plugins.htpasswd;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.StringTokenizer;
+import java.util.stream.Collectors;
 
 /**
  * htgroup file parser.
@@ -35,7 +37,7 @@ import java.util.StringTokenizer;
  * @author kesha (Kestutis Kupciunas)
  */
 public class HtGroupFile extends HtFile {
-    protected HashMap<String, List<String>> entries = new HashMap<String, List<String>>();
+    protected Map<String, List<String>> entries = new HashMap<>();
 
     @Override
     public void put(String key, String value) {
@@ -43,7 +45,7 @@ public class HtGroupFile extends HtFile {
             return;
         }
 
-        ArrayList<String> users = new ArrayList<String>();
+        ArrayList<String> users = new ArrayList<>();
         StringTokenizer tok = new StringTokenizer(value);
         while (tok.hasMoreTokens()) {
             users.add(tok.nextToken());
@@ -58,7 +60,6 @@ public class HtGroupFile extends HtFile {
     public void clear() {
         entries.clear();
     }
-
 
     /**
      * Returns members of the given group.
@@ -78,14 +79,8 @@ public class HtGroupFile extends HtFile {
      * @return list of groups that the given user belongs to
      */
     public List<String> getGroups(String user) {
-        ArrayList<String> groups = new ArrayList<String>();
-
-        for (Entry<String, List<String>> entry : entries.entrySet()) {
-            if (entry.getValue().contains(user)){
-                groups.add(entry.getKey());
-            }
-        }
-
-        return groups;
+        return entries.entrySet().parallelStream()
+                .filter(e -> e.getValue().contains(user)).map(Entry<String, List<String>>::getKey)
+                .collect(Collectors.toList());
     }
 }

@@ -39,8 +39,8 @@ public class CachedHtFile<T extends HtFile> {
 
     private T htFile;
     private long lastModified;
-    private String fileName;
-    private Class<T> clazz;
+    private final String fileName;
+    private final Class<T> clazz;
 
     /**
      * Creates cache instance for the given file type (htpasswd, htgroups etc).
@@ -64,7 +64,6 @@ public class CachedHtFile<T extends HtFile> {
      * @throws ReflectiveOperationException on any instance creation failure
      */
     public T get() throws IOException, ReflectiveOperationException {
-        FileReader reader = null;
         File f = new File(fileName);
 
         // if we cannot access the file for some reason
@@ -73,26 +72,21 @@ public class CachedHtFile<T extends HtFile> {
             if (htFile != null) {
                 return htFile;
             } else {
-                String msg = String.format("File %s is not accessible!", fileName);
-                throw new IOException(msg);
+                throw new IOException(String.format("File %s is not accessible!", fileName));
             }
         }
 
-        // if modification time matches the one recorded earlier -
-        // return cached info
+        // if modification time matches the one recorded earlier - return cached info
         if ((f.lastModified() == lastModified) && (htFile != null)) {
             return htFile;
         }
 
-        try {
-            reader = new FileReader(f);
-
+        try (FileReader reader = new FileReader(f)) {
             if (htFile == null) {
                 htFile = clazz.newInstance();
             } else {
                 htFile.clear();
-                logger.info("Modification detected on " + fileName
-                        + " - reloading...");
+                logger.info(() -> "Modification detected on " + fileName + " - reloading...");
             }
 
             htFile.load(reader);
@@ -105,12 +99,6 @@ public class CachedHtFile<T extends HtFile> {
         } catch (ReflectiveOperationException ex) {
             logger.throwing("CachedHtFile", "get()", ex);
             throw ex;
-        } finally {
-            try {
-                if (reader != null)
-                    reader.close();
-            } catch (Exception ignored) {
-            }
         }
     }
 }
