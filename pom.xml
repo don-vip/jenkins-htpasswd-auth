@@ -11,6 +11,8 @@
     <version>2.0-SNAPSHOT</version>
     <packaging>hpi</packaging>
     <name>htpasswd Plugin</name>
+    <description>This plugin allows to use Apache htpasswd file as an alternative access control security realm.</description>
+    <url>https://github.com/kkupciunas/jenkins-htpasswd-auth</url>
 
     <licenses>
         <license>
