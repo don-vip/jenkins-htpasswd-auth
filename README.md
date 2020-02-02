@@ -1,7 +1,7 @@
 Jenkins htpasswd Plugin
 =======================
 
-This plugin allows Jenkins (http://jenkins-ci.org) to use Apache *htpasswd* 
+This plugin allows Jenkins (https://jenkins-ci.org) to use Apache *htpasswd* 
 file as an alternative access control security realm.
 
 Why? I did it just because I needed user access integration with existing
@@ -23,7 +23,7 @@ There are no plans to support plain text passwords.
 Installation
 ============
 
-Maven (http://maven.apache.org/) is required to build plugin package.
+Maven (https://maven.apache.org/) is required to build plugin package.
 
 Run
 	`mvn -s settings.xml clean package`
