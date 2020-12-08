@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import org.acegisecurity.BadCredentialsException;
 import org.acegisecurity.GrantedAuthority;
@@ -155,12 +156,8 @@ public class HtPasswdSecurityRealm extends AbstractPasswordBasedSecurityRealm im
 
     private GrantedAuthority[] getUserGroups(final String username) {
         try {
-            HtGroupFile htgroups = getHtGroupFile();
-            List<String> groups = htgroups.getGroups(username);
-            ArrayList<GrantedAuthority> authorities = new ArrayList<>(groups.size());
-            for (String group : groups) {
-                authorities.add(new GrantedAuthorityImpl(group));
-            }
+            List<GrantedAuthority> authorities = getHtGroupFile().getGroups(username).stream()
+                    .map(GrantedAuthorityImpl::new).collect(Collectors.toList());
             return authorities.toArray(GRANTED_AUTHORITY_TYPE);
         } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.getMessage(), ex);

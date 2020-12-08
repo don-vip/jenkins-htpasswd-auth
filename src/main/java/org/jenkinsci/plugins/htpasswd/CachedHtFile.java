@@ -83,7 +83,7 @@ public class CachedHtFile<T extends HtFile> {
 
         try (FileReader reader = new FileReader(f)) {
             if (htFile == null) {
-                htFile = clazz.newInstance();
+                htFile = clazz.getDeclaredConstructor().newInstance();
             } else {
                 htFile.clear();
                 logger.info(() -> "Modification detected on " + fileName + " - reloading...");
