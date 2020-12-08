@@ -45,9 +45,6 @@ import com.identity4j.connector.ConnectorBuilder;
 import com.identity4j.connector.flatfile.FlatFileConfiguration;
 import com.identity4j.connector.htpasswd.HTPasswdConnector;
 import com.identity4j.util.MultiMap;
-import com.identity4j.util.crypt.EncoderManager;
-import com.identity4j.util.crypt.impl.DefaultEncoderManager;
-import com.identity4j.util.crypt.impl.UnixDESEncoder;
 
 import hudson.Extension;
 import hudson.model.Descriptor;
@@ -64,19 +61,6 @@ public class HtPasswdSecurityRealm extends AbstractPasswordBasedSecurityRealm im
     private static final long serialVersionUID = 2L;
 
     private static final Logger logger = Logger.getLogger("htpasswd-security-realm");
-
-    static {
-        try {
-            // Fix the UNIX DES encoder
-            // Workaround to https://github.com/nervepoint/identity4j/pull/3
-            Class.forName(HTPasswdConnector.class.getName());
-            EncoderManager manager = DefaultEncoderManager.getInstance();
-            manager.removeEncoder(manager.getEncoderById(UnixDESEncoder.ID));
-            manager.addEncoder(new UnixDESEncoderFix());
-        } catch (ClassNotFoundException ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
-        }
-    }
 
     private final String htpasswdLocation;
     private final String htgroupsLocation;
