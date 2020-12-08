@@ -42,7 +42,7 @@ import org.acegisecurity.userdetails.UsernameNotFoundException;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import com.identity4j.connector.ConnectorBuilder;
-import com.identity4j.connector.flatfile.FlatFileConfiguration;
+import com.identity4j.connector.flatfile.AbstractFlatFileConfiguration;
 import com.identity4j.connector.htpasswd.HTPasswdConnector;
 import com.identity4j.util.MultiMap;
 
@@ -89,7 +89,7 @@ public class HtPasswdSecurityRealm extends AbstractPasswordBasedSecurityRealm im
             try (InputStream inputStream = getClass().getResourceAsStream("/htpasswd-connector.properties")) {
                 Properties properties = new Properties();
                 properties.load(inputStream);
-                properties.put(FlatFileConfiguration.KEY_FILENAME, htpasswdLocation);
+                properties.put(AbstractFlatFileConfiguration.KEY_FILENAME, htpasswdLocation);
                 htPasswdConnector.open(new ConnectorBuilder().buildConfiguration(MultiMap.toMultiMap(properties)));
             }
         }
